@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import NewsCard from "./NewsCard";
 import { useUser } from "../../context/UserContext"
+import { API_BASE } from "../../utils/api";
 
 const TopNews = () => {
   const [topNews, setTopNews] = useState([]);
@@ -41,7 +42,7 @@ const TopNews = () => {
       setLoading(true);
     if(!cachedNews || parsedCachedDate !== today) {
 
-        const response = await fetch(`/api/finnhub/news?category=general&uid=${currentUser.uid}`);
+        const response = await fetch(`${API_BASE}/api/finnhub/news?category=general&uid=${currentUser.uid}`);
         if (!response.ok) {
           throw new Error(`API request failed with status ${response.status}`);
         }

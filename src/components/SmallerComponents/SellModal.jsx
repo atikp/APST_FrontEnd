@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../firebase';
+import { API_BASE } from "../../utils/api";
 
 const SellModal = ({ holding, onSell, onClose }) => {
   const { userData } = useUser();
@@ -22,7 +23,7 @@ const SellModal = ({ holding, onSell, onClose }) => {
     const fetchLivePrice = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/nasdaq/quote/${symbol}`);
+        const response = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
         const data = await response.json();
         const price = parseFloat(
           data?.data?.primaryData?.lastSalePrice?.replace("$", "") || "0"
@@ -63,7 +64,7 @@ const SellModal = ({ holding, onSell, onClose }) => {
     const totalSellAmount = Number(amountToSell) * currentPrice;
 
     try {
-      const response = await fetch("/api/trade/sell", {
+      const response = await fetch(`${API_BASE}/api/trade/sell`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

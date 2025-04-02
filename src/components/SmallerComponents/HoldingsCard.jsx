@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import SellModal from "./SellModal";
 import { useUser } from "../../context/UserContext";
+import { API_BASE } from "../../utils/api";
 import {
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
 } from "@heroicons/react/24/solid";
+
 
 const HoldingsCard = ({ holding }) => {
   const [logoUrl, setLogoUrl] = useState("");
@@ -30,7 +32,7 @@ const HoldingsCard = ({ holding }) => {
 
     const fetchLivePrice = async () => {
       try {
-        const res = await fetch(`/api/nasdaq/quote/${symbol}`);
+        const res = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
         const data = await res.json();
         const livePrice = parseFloat(
           data?.data?.primaryData?.lastSalePrice?.replace("$", "") || "0"

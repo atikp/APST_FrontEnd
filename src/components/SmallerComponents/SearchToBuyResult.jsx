@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import BuyModal from './BuyModal'; // Adjust path if needed
+import BuyModal from './BuyModal';
+import { API_BASE } from "../../utils/api";
 
 const SearchToBuyResult = ({ searchedSymbol, setShowCompanyCard,scrollToHoldings  }) => {
   const [showBuyModal, setShowBuyModal] = useState(false);
@@ -11,7 +12,7 @@ const SearchToBuyResult = ({ searchedSymbol, setShowCompanyCard,scrollToHoldings
     const fetchCompany = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/nasdaq/quote/${searchedSymbol}`, {
+        const res = await fetch(`${API_BASE}/api/nasdaq/quote/${searchedSymbol}`, {
           headers: {
             'User-Agent': 'Mozilla/5.0',
             Accept: 'application/json',

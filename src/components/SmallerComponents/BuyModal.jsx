@@ -3,6 +3,7 @@ import { useUser } from '../../context/UserContext';
 import { toast } from 'react-toastify';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../firebase';
+import { API_BASE } from "../../utils/api";
 
 const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
   const [searchedCompany, setSearchedCompany] = useState(null);
@@ -21,7 +22,7 @@ const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
     const fetchCompanyData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/nasdaq/quote/${symbol}`);
+        const response = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
         const data = await response.json();
         setSearchedCompany(data.data);
       } catch (err) {
@@ -62,7 +63,7 @@ const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
     setTimeLeft(10);
     setLoading(true);
     try {
-      const response = await fetch(`/api/nasdaq/quote/${symbol}`);
+      const response = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
       const data = await response.json();
       setSearchedCompany(data.data);
     } catch (err) {
@@ -96,7 +97,7 @@ const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
         searchedCompany?.primaryData?.lastSalePrice?.substring(1)
       );
 
-      const res = await fetch('/api/trade/buy', {
+      const res = await fetch(`${API_BASE}/api/trade/buy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

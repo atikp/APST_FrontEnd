@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { API_BASE } from "../../utils/api";
 
 function ForexFetch({ symbolFrom, symbolTo, setConversionRate, setCurrencyList }) {
   const url = `https://stocks.algobook.info/api/v1/exchange/`;
@@ -7,8 +8,8 @@ function ForexFetch({ symbolFrom, symbolTo, setConversionRate, setCurrencyList }
     const fetchForexData = async () => {
       try {
         const [rateResponse, currenciesResponse] = await Promise.all([
-          fetch(`/api/forex/rate?from=${symbolFrom}&to=${symbolTo}`),
-          fetch(`/api/forex/currencies`),
+          fetch(`${API_BASE}/api/forex/rate?from=${symbolFrom}&to=${symbolTo}`),
+          fetch(`${API_BASE}/api/forex/currencies`),
         ]);
 
         const rateResult = await rateResponse.json();

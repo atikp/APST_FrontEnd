@@ -4,6 +4,7 @@ import { useUser } from '../../context/UserContext';
 import StockGraph from '../ChartComponents/MainStock';
 import useAccolade from '../../hooks/UseAccolades';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE } from "../../utils/api";
 
 const makeThousand = (x, y, z) =>
   Number(x).toLocaleString('en-US', { style: y, currency: z });
@@ -50,7 +51,7 @@ function CompanyDescription() {
   
       try {
         // Fetch current stock data
-        const currentResponse = await fetch(`/api/nasdaq/quote/${symbol}`, {
+        const currentResponse = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`, {
           headers: {
             'User-Agent': 'Mozilla/5.0',
             Accept: 'application/json',
@@ -83,7 +84,7 @@ function CompanyDescription() {
   
         // Fetch fresh if not in session
         if (!companyData) {
-          const freshCompanyDataResponse = await fetch(`/api/fmp/profile/${symbol}?uid=${currentUser.uid}`);
+          const freshCompanyDataResponse = await fetch(`${API_BASE}/api/fmp/profile/${symbol}?uid=${currentUser.uid}`);
           if (!freshCompanyDataResponse.ok) {
             throw new Error(`HTTP error! Status: ${freshCompanyDataResponse.status}`);
           }

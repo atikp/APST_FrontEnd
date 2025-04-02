@@ -4,6 +4,7 @@ import TwentyFourHourChart from './twofourChart';
 import OneMonthChart from './monthlyStock';
 import OneYearChart from './OneYearChart';
 import TwentyYearChart from './Twenty';
+import { API_BASE } from "../../utils/api";
 
 const StockGraph = ({ symbol, theme, website }) => {
   const { currentUser } = useUser();
@@ -47,13 +48,13 @@ const StockGraph = ({ symbol, theme, website }) => {
           (activeChart === '24h' || activeChart === '1m') &&
           !fetchedIntraday.current
         ) {
-          endpoint = `/api/alpha/intraday/${symbol}?uid=${currentUser.uid}`;
+          endpoint = `${API_BASE}/api/alpha/intraday/${symbol}?uid=${currentUser.uid}`;
           fetchedIntraday.current = true;
         } else if (
           (activeChart === '1y' || activeChart === '20y') &&
           !fetchedMonthly.current
         ) {
-          endpoint = `/api/alpha/monthly/${symbol}?uid=${currentUser.uid}`;
+          endpoint = `${API_BASE}/api/alpha/monthly/${symbol}?uid=${currentUser.uid}`;
           fetchedMonthly.current = true;
         } else {
           return;

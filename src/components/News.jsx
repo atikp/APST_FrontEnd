@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebase.js';
 import { toast } from 'react-toastify';
-
+import { API_BASE } from "../utils/api.js";
 
 function News() {
   const [news, setNews] = useState([]);
@@ -48,7 +48,7 @@ function News() {
 
         if(!currentUser) return;
         const response = await fetch(
-          `/api/finnhub/news?category=general&uid=${currentUser.uid}`
+          `${API_BASE}/api/finnhub/news?category=general&uid=${currentUser.uid}`
         );
 
         if (!response.ok) {
