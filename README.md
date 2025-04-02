@@ -1,4 +1,7 @@
-# 📈 APST - React Stock Trader (Frontend)
+<p align="center">
+  <img src="/src/assets/images/apst.png" alt="APST Logo" width="120" />
+</p>
+APST - React Stock Trader (Frontend)
 
 Welcome to **APST (AP Stock Trader)** — a gamified, beginner-friendly React stock trading simulation app. This is the **frontend** repo built with React, Vite, TailwindCSS, ApexCharts, and Firebase.
 
