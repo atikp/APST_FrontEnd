@@ -62,6 +62,7 @@ const StockGraph = ({ symbol, theme, website }) => {
 
         const res = await fetch(endpoint);
         const data = await res.json();
+        console.log("💾 Chart fetch response:", data);
 
         if (res.status !== 200 || data.note || data['Error Message']) {
           setLimitReached(true);
