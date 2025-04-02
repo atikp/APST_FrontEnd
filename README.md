@@ -1,6 +1,6 @@
 # 📈 APST - React Stock Trader (Frontend)
 
-Welcome to **APST (Alpha Public Stock Trader)** — a gamified, beginner-friendly React stock trading simulation app. This is the **frontend** repo built with React, Vite, TailwindCSS, ApexCharts, and Firebase.
+Welcome to **APST (AP Stock Trader)** — a gamified, beginner-friendly React stock trading simulation app. This is the **frontend** repo built with React, Vite, TailwindCSS, ApexCharts, and Firebase.
 
 > ⚠️ This is a simulated environment using real-world stock data. No real money or trading takes place.
 
