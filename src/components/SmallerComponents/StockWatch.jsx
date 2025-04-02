@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import StockCard from "./StockCard";
+import { API_BASE } from "../../utils/api";
 
 const StockWatch = ({ PROPSYMBOLS }) => {
   const [prices, setPrices] = useState(() => {
@@ -17,7 +18,8 @@ const StockWatch = ({ PROPSYMBOLS }) => {
       if (!user) return;
   
       user.getIdToken().then((token) => {
-        socket = new WebSocket(`ws://localhost:8080?token=${token}`);
+        
+      socket = new WebSocket(`${API_BASE.replace(/^http/, "ws")}?token=${token}`);
   
         socket.addEventListener("message", (event) => {
           try {
