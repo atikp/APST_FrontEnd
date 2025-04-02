@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/src/assets/images/apst.png" alt="APST Logo" width="120" />
+  <img src="/src/assets/images/apst.png" alt="APST Logo" width="120" background-color="#fff" padding="10px"/>
 </p>
 APST - React Stock Trader (Frontend)
 
