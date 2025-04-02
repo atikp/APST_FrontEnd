@@ -1,0 +1,59 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<svg id="a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 537 666.5">
+  <defs>
+    <style>
+      .b {
+        fill: none;
+        stroke-width: 25px;
+      }
+
+      .b, .c, .d {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .c {
+        stroke-width: 35px;
+      }
+
+      .c, .d {
+        fill: none;
+      }
+
+      .d {
+        stroke-width: 22px;
+      }
+
+      .e {
+        letter-spacing: .08em;
+      }
+
+      .f {
+        letter-spacing: .08em;
+      }
+
+      .g {
+        letter-spacing: .08em;
+      }
+
+      .h {
+        letter-spacing: .07em;
+      }
+
+      .i {
+        font-family: Elkwood, Elkwood;
+        font-size: 186px;
+      }
+    </style>
+  </defs>
+  <path class="b" d="M219.89,196.69c-29.8-16.94-49.89-48.97-49.89-85.69,0-54.4,44.1-98.5,98.5-98.5s98.5,44.1,98.5,98.5c0,34.44-17.67,64.74-44.44,82.35"/>
+  <line class="c" x1="269" y1="104.5" x2="269" y2="398.5"/>
+  <polyline class="d" points="311.5 147.5 270 88.5 266.5 88.5 225 147.5"/>
+  <line class="c" x1="200" y1="226.5" x2="200" y2="398.5"/>
+  <line class="c" x1="131" y1="297.5" x2="131" y2="398.5"/>
+  <line class="c" x1="340" y1="226.5" x2="340" y2="398.5"/>
+  <line class="c" x1="411" y1="297.5" x2="411" y2="398.5"/>
+  <circle class="c" cx="131.25" cy="257.75" r="2.75"/>
+  <circle class="c" cx="411.25" cy="257.75" r="2.75"/>
+  <text class="i" transform="translate(63.03 522.96)"><tspan class="e" x="0" y="0">A</tspan><tspan class="h" x="122.32" y="0">P</tspan><tspan class="g" x="223.85" y="0">S</tspan><tspan class="f" x="323.2" y="0">T</tspan></text>
+</svg>
