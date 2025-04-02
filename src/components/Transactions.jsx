@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import HoldingsCard from './SmallerComponents/HoldingsCard';
 import SearchToBuy from './SmallerComponents/SearchToBuy';
 import SearchToBuyResult from './SmallerComponents/SearchToBuyResult';
-import ForexFetch from './SmallerComponents/forexFetch';
+import ForexFetch from './SmallerComponents/ForexFetch';
 import { useUser } from '../context/UserContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
