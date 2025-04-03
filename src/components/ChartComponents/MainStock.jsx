@@ -21,7 +21,7 @@ const StockGraph = ({ symbol, theme, website }) => {
   const useMock = import.meta?.env?.VITE_USE_MOCK ===  'true';
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || limitReached) return; 
     setLoading(true);
     setLimitReached(false);
     fetchedIntraday.current = false;
@@ -99,17 +99,21 @@ const StockGraph = ({ symbol, theme, website }) => {
 
         const res = await fetch(endpoint);
         const data = await res.json();
-        console.log("💾 Chart fetch response:", data.Information);
-        if (!data['Time Series (5min)'] || !data['Monthly Time Series']) {
-          toast.error("Chart data unavailable. Try again later.");
-          return;
-        }
-
-        if (res.status !== 200 || data.Information.includes() || data['Error Message']) {
+        // console.log("💾 Chart fetch response:", data.Information);
+        
+        if (
+          res.status !== 200 ||
+          data['Error Message'] ||
+          (data.Information && data.Information.includes("standard API rate limit"))
+        ) {
           setLimitReached(true);
           toast.error("API limit reached for today. Try again tomorrow.");
           return;
+        } else if (!data['Time Series (5min)'] || !data['Monthly Time Series']) {
+          toast.error("Chart data unavailable. Try again later.");
+          return;
         }
+       
 
         let formatted = [];
 
@@ -153,6 +157,27 @@ const StockGraph = ({ symbol, theme, website }) => {
 
   const ChartComponent = chartComponents[activeChart];
 
+  if (limitReached) {
+    return (
+      <div className="p-4 mt-5 mx-5 border rounded-2xl dark:bg-gray-900 text-center">
+        <p className="text-red-500 font-semibold">
+          You have reached your API limit for today.
+        </p>
+        <p className="text-gray-400">
+          Charts are limited to 25 companies per day. For more details, visit
+          the official company profile:
+          <a
+            href={`https://www.nasdaq.com${website}`}
+            target="_blank"
+            className="text-blue-500 ml-1"
+          >
+            {`https://www.nasdaq.com${website}`}
+          </a>
+        </p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div role="status" className="flex justify-center items-center h-64">
@@ -175,26 +200,7 @@ const StockGraph = ({ symbol, theme, website }) => {
     );
   }
 
-  if (limitReached) {
-    return (
-      <div className="p-4 mt-5 mx-5 border rounded-2xl dark:bg-gray-900 text-center">
-        <p className="text-red-500 font-semibold">
-          You have reached your API limit for today.
-        </p>
-        <p className="text-gray-400">
-          Charts are limited to 25 companies per day. For more details, visit
-          the official company profile:
-          <a
-            href={`https://www.nasdaq.com${website}`}
-            target="_blank"
-            className="text-blue-500 ml-1"
-          >
-            {`https://www.nasdaq.com${website}`}
-          </a>
-        </p>
-      </div>
-    );
-  }
+
   const chartData = activeChart === '24h' || activeChart === '1m'
   ? intradayData
   : monthlyData;
