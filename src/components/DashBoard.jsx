@@ -1,7 +1,6 @@
 import StockWatch from './SmallerComponents/StockWatch';
 import TopNews from './SmallerComponents/TopNews';
-import * as Tooltip from '@radix-ui/react-tooltip';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import MobileFriendlyTooltip from './SmallerComponents/MobileFriendlyTooltip';
 
 export default function DashBoard({ PROPSYMBOLS }) {
   return (
@@ -9,30 +8,7 @@ export default function DashBoard({ PROPSYMBOLS }) {
       <section>
         <div className="bg-white dark:bg-black">
           <div className="relative isolate px-6 pt-14 lg:px-8">
-            <Tooltip.Provider delayDuration={0}>
-              <div className="flex items-center justify-center self-center place-self-center mb-10">
-                <h1 className="z-50 text-4xl dark:text-white">
-                  Your Watched Stocks
-                </h1>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
-                    <button className="ml-3">
-                      <InformationCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-700" />
-                    </button>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className="bg-black text-white text-sm rounded px-3 py-1 shadow-md"
-                      side="right"
-                      sideOffset={5}
-                    >
-                      If your stocks aren't loading, try refreshing the page.
-                      <Tooltip.Arrow className="fill-black" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </div>
-            </Tooltip.Provider>
+            <MobileFriendlyTooltip title={"Your watched Stocks"} message={"If your stocks aren't loading, try refreshing the page."}/>
 
             <StockWatch PROPSYMBOLS={PROPSYMBOLS} />
             <div

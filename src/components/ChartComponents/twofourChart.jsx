@@ -100,7 +100,7 @@ const TwentyFourHourChart = ({ data, symbol, theme, date  }) => {
       y: {
         formatter: (value) => `$${value.toFixed(2)}`,
       },
-    },
+    }
   };
 
   return (

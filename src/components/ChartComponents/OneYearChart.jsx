@@ -44,7 +44,16 @@ const OneYearChart = ({ data, symbol, theme, date }) => {
         formatter: (value) => new Date(value).toLocaleDateString('default', { month: 'short', year: 'numeric' }) 
       }
     },
-    yaxis: { title: { text: "Price" } }
+    yaxis: { title: { text: "Price" } },
+    tooltip: {
+      theme:theme,
+      x: {
+        format: 'dd MMM yyyy HH:mm',
+      },
+      y: {
+        formatter: (value) => `$${value.toFixed(2)}`,
+      },
+    }
   };
 
   return (

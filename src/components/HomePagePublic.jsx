@@ -17,6 +17,7 @@ import { auth, db } from '../../firebase';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import MobileFriendlyTooltip from './SmallerComponents/MobileFriendlyTooltip';
 
 export default function HomePagePublic({ open, setOpen, openSignUp, setOpenSignUp }) {
   const [formData, setFormData] = useState({
@@ -585,8 +586,8 @@ useEffect(() => {
           </div>
         </div>
       </Dialog>
-      <section>
-        <div className="bg-white dark:bg-black h-dvh justify-center items-center flex">
+      <section className=''>
+        <div className="bg-white dark:bg-black h-dvh justify-center items-center flex -mt-29">
           <div className="relative isolate px-6 pt-14 lg:px-8">
             <div
               aria-hidden="true"
@@ -600,7 +601,7 @@ useEffect(() => {
                 className="relative left-[calc(50%-11rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
               />
             </div>
-            <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+            <div className="mx-auto max-w-2xl">
               <Video />
               <div className="text-center">
                 <h1 className="text-5xl font-bold tracking-tight text-balance text-white sm:text-7xl ">
@@ -624,9 +625,17 @@ useEffect(() => {
             <div className="mt-10 flex justify-center">
   {!hideArrow && (
     <button
-      onClick={() =>
-        document.getElementById('stepByStep')?.scrollIntoView({ behavior:"smooth"})
+    onClick={() => {
+      const element = document.getElementById('stepByStep');
+      if (element) {
+        const isMobile = window.innerWidth <760
+        const yOffset = isMobile ? -70: - 150; // Adjust this value to your desired offset
+        const y =
+          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    
+        window.scrollTo({ top: y, behavior: 'smooth' });
       }
+    }}
       className="animate-bounce"
       aria-label="Scroll down"
     >
@@ -786,7 +795,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="mt-5 flex flex-col place-self-center gap-x-6">
-                <h2 className="text-2xl mb-3">BEFORE YOU START</h2>
+                <MobileFriendlyTooltip title={"BEFORE YOU START"} message={"If you would like more info please visit the FAQ page in the footer"}/>
                 <p>
                   Since this app is completely FREE to use, there are 3 things I
                   need for you to do before signing up.

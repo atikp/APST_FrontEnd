@@ -5,6 +5,7 @@ import OneMonthChart from './monthlyStock';
 import OneYearChart from './OneYearChart';
 import TwentyYearChart from './Twenty';
 import { API_BASE } from "../../utils/api";
+import { toast } from 'react-toastify';
 
 const StockGraph = ({ symbol, theme, website }) => {
   const { currentUser } = useUser();
@@ -16,6 +17,8 @@ const StockGraph = ({ symbol, theme, website }) => {
 
   const fetchedIntraday = useRef(false);
   const fetchedMonthly = useRef(false);
+
+  const useMock = import.meta?.env?.VITE_USE_MOCK ===  'true';
 
   useEffect(() => {
     if (!currentUser) return;
@@ -48,12 +51,46 @@ const StockGraph = ({ symbol, theme, website }) => {
           (activeChart === '24h' || activeChart === '1m') &&
           !fetchedIntraday.current
         ) {
+          if (useMock) {
+            const mockModule = await import('../../mock/mockStockData.json');
+            const rawData = mockModule.default["Time Series (5min)"];
+        
+            const formatted = Object.entries(rawData)
+              .map(([date, values]) => ({
+                date,
+                open: parseFloat(values["1. open"]),
+              }))
+              .sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+            setIntradayData(formatted);
+            sessionStorage.setItem(`${symbol}_${activeChart}`, JSON.stringify(formatted));
+            fetchedIntraday.current = true;
+            return;
+          }
+        
           endpoint = `${API_BASE}/api/alpha/intraday/${symbol}?uid=${currentUser.uid}`;
           fetchedIntraday.current = true;
         } else if (
           (activeChart === '1y' || activeChart === '20y') &&
           !fetchedMonthly.current
         ) {
+          if (useMock) {
+            const mockModule = await import('../../mock/mockStockDataYear.json');
+            const rawData = mockModule.default["Monthly Time Series"];
+        
+            const formatted = Object.entries(rawData)
+              .map(([date, values]) => ({
+                date,
+                open: parseFloat(values["1. open"]),
+              }))
+              .sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+            setMonthlyData(formatted);
+            sessionStorage.setItem(`${symbol}_${activeChart}`, JSON.stringify(formatted));
+            fetchedMonthly.current = true;
+            return;
+          }
+        
           endpoint = `${API_BASE}/api/alpha/monthly/${symbol}?uid=${currentUser.uid}`;
           fetchedMonthly.current = true;
         } else {
@@ -62,14 +99,15 @@ const StockGraph = ({ symbol, theme, website }) => {
 
         const res = await fetch(endpoint);
         const data = await res.json();
-        // console.log("💾 Chart fetch response:", data);
+        console.log("💾 Chart fetch response:", data.Information);
         if (!data['Time Series (5min)'] || !data['Monthly Time Series']) {
           toast.error("Chart data unavailable. Try again later.");
           return;
         }
 
-        if (res.status !== 200 || data.note || data['Error Message']) {
+        if (res.status !== 200 || data.Information.includes() || data['Error Message']) {
           setLimitReached(true);
+          toast.error("API limit reached for today. Try again tomorrow.");
           return;
         }
 

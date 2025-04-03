@@ -23,3 +23,7 @@
 ::deep div.apexcharts-toolbar {
   top: 50px;
 }
+
+.apexcharts-tooltip{
+  background-color:#fff;
+}

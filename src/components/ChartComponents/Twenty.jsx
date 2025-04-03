@@ -43,7 +43,18 @@ const TwentyYearChart = ({ data, symbol, theme, date  }) => {
         formatter: (value) => new Date(value).toLocaleDateString('default', { year: 'numeric' }) 
       }
     },
-    yaxis: { title: { text: "Price" } }
+    yaxis: { title: { text: "Price" } },
+    tooltip: {
+      theme:theme,
+      x: {
+        format: 'dd MMM yyyy',
+      },
+      y: {
+        formatter: (value) => `$${value.toFixed(2)}`,
+      },
+    }
+    
+
   };
 
   return (

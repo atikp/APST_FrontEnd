@@ -11,6 +11,7 @@ import firstTenThousandImage from '../../assets/badges/firstTenThousand.png'
 import firstNewsImage from '../../assets/badges/firstNews.png'
 import firstWatchlistAddImage from '../../assets/badges/firstWatchlistAdd.png'
 import faqViewImage from '../../assets/badges/faqView.png'
+import MobileFriendlyTooltip from './MobileFriendlyTooltip';
 
 
 const ACCOLADES = {
@@ -29,30 +30,7 @@ const ACCOLADES = {
 export default function AccoladesDisplay({ accolades = [],userData }) {
   return (
     <div className="mt-10 p-6 rounded-xl border dark:border-gray-700 border-gray-300 bg-white dark:bg-black shadow-md">
-      <Tooltip.Provider delayDuration={0}>
-              <div className="flex items-center justify-center self-center place-self-center mt-10 mb-10">
-                <h1 className="z-50 text-4xl dark:text-white">
-                Accomplishments
-                </h1>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
-                    <button className="ml-3">
-                      <InformationCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-700" />
-                    </button>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className="bg-black text-white text-sm rounded px-3 py-1 shadow-md"
-                      side="right"
-                      sideOffset={5}
-                    >
-                      If your Accolades aren't loading, try refreshing the page.
-                      <Tooltip.Arrow className="fill-black" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </div>
-            </Tooltip.Provider>
+      <MobileFriendlyTooltip title={"Accomplishments"} message={"If your Accolades aren't loading, try refreshing the page."} />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {Object.entries(ACCOLADES).map(([key, { label, image }]) => {
           const unlocked = accolades.includes(key);
