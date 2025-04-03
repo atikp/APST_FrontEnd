@@ -93,6 +93,7 @@ const TwentyFourHourChart = ({ data, symbol, theme, date  }) => {
       },
     },
     tooltip: {
+      theme:theme,
       x: {
         format: 'dd MMM yyyy HH:mm',
       },
