@@ -7,155 +7,160 @@ import TwentyYearChart from './Twenty';
 import { API_BASE } from "../../utils/api";
 import { toast } from 'react-toastify';
 
-const StockGraph = ({ symbol, theme, website }) => {
+const CHART_TYPES = {
+  '24h': { component: TwentyFourHourChart, dataType: 'intraday' },
+  '1m': { component: OneMonthChart, dataType: 'intraday' },
+  '1y': { component: OneYearChart, dataType: 'monthly' },
+  '20y': { component: TwentyYearChart, dataType: 'monthly' }
+};
+
+const StockGraph = ({ symbol, website }) => {
   const { currentUser } = useUser();
-  const [intradayData, setIntradayData] = useState([]);
-  const [monthlyData, setMonthlyData] = useState([]);
+  const [chartData, setChartData] = useState({
+    intraday: [],
+    monthly: []
+  });
   const [loading, setLoading] = useState(true);
   const [activeChart, setActiveChart] = useState('24h');
   const [limitReached, setLimitReached] = useState(false);
-
-  const fetchedIntraday = useRef(false);
-  const fetchedMonthly = useRef(false);
-
-  const useMock = import.meta?.env?.VITE_USE_MOCK ===  'true';
+  const [theme, setTheme] = useState(() => {
+    // Initialize from window or default to 'light'
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+  
+  const fetchStatus = useRef({
+    inProgress: false,
+    fetchedIntraday: false,
+    fetchedMonthly: false
+  });
+  
+  // const useMock = import.meta?.env?.VITE_USE_MOCK === 'true';
+  const useMock = false
 
   useEffect(() => {
-    if (!currentUser || limitReached) return; 
-    setLoading(true);
-    setLimitReached(false);
-    fetchedIntraday.current = false;
-    fetchedMonthly.current = false;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    console.log(theme)
+    // Initial check
+    setTheme(mediaQuery.matches ? 'dark' : 'light');
+    
+    // Set up listener for changes using the modern addEventListener
+    const handleChange = (e) => {
+      setTheme(e.matches ? 'dark' : 'light');
+    };
+    
+    // Modern approach with try/catch for better browser compatibility
+    try {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    } catch (error) {
+      console.warn('Browser doesn\'t support matchMedia addEventListener, theme updates may not be detected');
+    }
+  }, []);
 
-    const fetchDataBasedOnActiveChart = async () => {
-      if (limitReached || !currentUser) return;
-
-      const cacheKey = `${symbol}_${activeChart}`;
+  useEffect(() => {
+    const fetchData = async () => {
+      // Skip if no user, limit reached, or fetch already in progress
+      if (!currentUser || limitReached || fetchStatus.current.inProgress) return;
+      
+      const { dataType } = CHART_TYPES[activeChart];
+      
+      // Skip if we've already fetched this data type
+      if (fetchStatus.current[`fetched${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`]) {
+        setLoading(false);
+        return;
+      }
+      
+      fetchStatus.current.inProgress = true;
+      setLoading(true);
+      
+      const cacheKey = `${symbol}_${dataType}`;
       const cached = sessionStorage.getItem(cacheKey);
 
       if (cached) {
-        const parsed = JSON.parse(cached);
-        if (activeChart === '24h' || activeChart === '1m') {
-          setIntradayData(parsed);
-        } else {
-          setMonthlyData(parsed);
-        }
+        setChartData(prev => ({ ...prev, [dataType]: JSON.parse(cached) }));
+        fetchStatus.current[`fetched${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`] = true;
         setLoading(false);
+        fetchStatus.current.inProgress = false;
         return;
       }
 
       try {
-        let endpoint = '';
-
-        if (
-          (activeChart === '24h' || activeChart === '1m') &&
-          !fetchedIntraday.current
-        ) {
-          if (useMock) {
-            const mockModule = await import('../../mock/mockStockData.json');
-            const rawData = mockModule.default["Time Series (5min)"];
-        
-            const formatted = Object.entries(rawData)
-              .map(([date, values]) => ({
-                date,
-                open: parseFloat(values["1. open"]),
-              }))
-              .sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-            setIntradayData(formatted);
-            sessionStorage.setItem(`${symbol}_${activeChart}`, JSON.stringify(formatted));
-            fetchedIntraday.current = true;
-            return;
-          }
-        
-          endpoint = `${API_BASE}/api/alpha/intraday/${symbol}?uid=${currentUser.uid}`;
-          fetchedIntraday.current = true;
-        } else if (
-          (activeChart === '1y' || activeChart === '20y') &&
-          !fetchedMonthly.current
-        ) {
-          if (useMock) {
-            const mockModule = await import('../../mock/mockStockDataYear.json');
-            const rawData = mockModule.default["Monthly Time Series"];
-        
-            const formatted = Object.entries(rawData)
-              .map(([date, values]) => ({
-                date,
-                open: parseFloat(values["1. open"]),
-              }))
-              .sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-            setMonthlyData(formatted);
-            sessionStorage.setItem(`${symbol}_${activeChart}`, JSON.stringify(formatted));
-            fetchedMonthly.current = true;
-            return;
-          }
-        
-          endpoint = `${API_BASE}/api/alpha/monthly/${symbol}?uid=${currentUser.uid}`;
-          fetchedMonthly.current = true;
+        if (useMock) {
+          await fetchMockData(dataType);
         } else {
-          return;
+          await fetchRealData(dataType);
         }
-
-        const res = await fetch(endpoint);
-        const data = await res.json();
-        // console.log("💾 Chart fetch response:", data.Information);
-        
-        if (
-          res.status !== 200 ||
-          data['Error Message'] ||
-          (data.Information && data.Information.includes("standard API rate limit"))
-        ) {
-          setLimitReached(true);
-          toast.error("API limit reached for today. Try again tomorrow.");
-          return;
-        } else if (!data['Time Series (5min)'] || !data['Monthly Time Series']) {
-          toast.error("Chart data unavailable. Try again later.");
-          return;
-        }
-       
-
-        let formatted = [];
-
-        if (data['Time Series (5min)']) {
-          formatted = Object.entries(data['Time Series (5min)'])
-            .map(([date, values]) => ({
-              date,
-              open: parseFloat(values['1. open']),
-            }))
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-          setIntradayData(formatted);
-        } else if (data['Monthly Time Series']) {
-          formatted = Object.entries(data['Monthly Time Series'])
-            .map(([date, values]) => ({
-              date,
-              open: parseFloat(values['1. open']),
-            }))
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-          setMonthlyData(formatted);
-        }
-
-        // Only store transformed chart data
-        sessionStorage.setItem(cacheKey, JSON.stringify(formatted));
       } catch (error) {
-        console.error('Error fetching chart data:', error);
+        console.error(`Error fetching ${dataType} data:`, error);
+        toast.error(`Failed to load chart data: ${error.message}`);
         setLimitReached(true);
       } finally {
         setLoading(false);
+        fetchStatus.current.inProgress = false;
       }
     };
 
-    fetchDataBasedOnActiveChart();
-  }, [symbol,theme, activeChart, currentUser, limitReached]);
+    fetchData();
+  }, [symbol, activeChart, currentUser,theme]);
 
-  const chartComponents = {
-    '24h': TwentyFourHourChart,
-    '1m': OneMonthChart,
-    '1y': OneYearChart,
-    '20y': TwentyYearChart,
+  const fetchMockData = async (dataType) => {
+    try {
+      const mockPath = dataType === 'intraday' 
+        ? '../../mock/mockStockData.json'
+        : '../../mock/mockStockDataYear.json';
+      
+      const mockModule = await import(mockPath);
+      const timeSeries = dataType === 'intraday' 
+        ? mockModule.default["Time Series (5min)"]
+        : mockModule.default["Monthly Time Series"];
+      
+      const formatted = Object.entries(timeSeries)
+        .map(([date, values]) => ({
+          date,
+          open: parseFloat(values["1. open"]),
+        }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      setChartData(prev => ({ ...prev, [dataType]: formatted }));
+      sessionStorage.setItem(`${symbol}_${dataType}`, JSON.stringify(formatted));
+      fetchStatus.current[`fetched${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`] = true;
+    } catch (error) {
+      console.error('Error fetching mock data:', error);
+      throw new Error('Could not load mock data');
+    }
   };
 
-  const ChartComponent = chartComponents[activeChart];
+  const fetchRealData = async (dataType) => {
+    const endpoint = `${API_BASE}/api/alpha/${dataType}/${symbol}?uid=${currentUser.uid}`;
+    const res = await fetch(endpoint);
+    const data = await res.json();
+    
+    // Check for API errors
+    if (res.status !== 200 || 
+        data['Error Message'] || 
+        (data.Information && data.Information.includes("standard API rate limit"))) {
+      setLimitReached(true);
+      toast.error("API limit reached for today. Try again tomorrow.");
+      return;
+    }
+    
+    const timeSeriesKey = dataType === 'intraday' ? 'Time Series (5min)' : 'Monthly Time Series';
+    if (!data[timeSeriesKey]) {
+      toast.error("Chart data unavailable. Try again later.");
+      return;
+    }
+    
+    const formatted = Object.entries(data[timeSeriesKey])
+      .map(([date, values]) => ({
+        date,
+        open: parseFloat(values['1. open']),
+      }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    setChartData(prev => ({ ...prev, [dataType]: formatted }));
+    sessionStorage.setItem(`${symbol}_${dataType}`, JSON.stringify(formatted));
+    fetchStatus.current[`fetched${dataType.charAt(0).toUpperCase() + dataType.slice(1)}`] = true;
+  };
 
   if (limitReached) {
     return (
@@ -169,6 +174,7 @@ const StockGraph = ({ symbol, theme, website }) => {
           <a
             href={`https://www.nasdaq.com${website}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="text-blue-500 ml-1"
           >
             {`https://www.nasdaq.com${website}`}
@@ -200,26 +206,24 @@ const StockGraph = ({ symbol, theme, website }) => {
     );
   }
 
+  const { dataType } = CHART_TYPES[activeChart];
+  const currentChartData = chartData[dataType];
+  const ChartComponent = CHART_TYPES[activeChart].component;
 
-  const chartData = activeChart === '24h' || activeChart === '1m'
-  ? intradayData
-  : monthlyData;
-
-// Get the most recent date from the chart data
-const lastDate = chartData?.[chartData.length - 1]?.date || '';
-
-const formattedDate = lastDate
-  ? new Date(lastDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  : '';
+  // Get the most recent date from the chart data
+  const lastDate = currentChartData[currentChartData.length - 1]?.date || '';
+  const formattedDate = lastDate
+    ? new Date(lastDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : '';
 
   return (
     <div className="p-4 mt-5 mx-5 border rounded-2xl dark:bg-gray-900">
       <div className="flex justify-center space-x-4 mb-4">
-        {Object.keys(chartComponents).map((timeframe) => (
+        {Object.keys(CHART_TYPES).map((timeframe) => (
           <button
             key={timeframe}
             className={`px-4 py-2 rounded-lg ${
@@ -235,11 +239,7 @@ const formattedDate = lastDate
       </div>
 
       <ChartComponent
-        data={
-          activeChart === '24h' || activeChart === '1m'
-            ? intradayData
-            : monthlyData
-        }
+        data={currentChartData}
         symbol={symbol}
         theme={theme}
         date={formattedDate}

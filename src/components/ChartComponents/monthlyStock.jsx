@@ -31,7 +31,7 @@ const OneMonthChart = ({ data, symbol, theme, date }) => {
       },
       redrawOnWindowResize:true,
       background: 'transparent',
-      foreColor:(theme = "dark" ? "#fff" : "#222324"),
+      foreColor:(theme === "dark" ? "#fff" : "#222324"),
       type: "line", 
       height: 350,
       zoom: { enabled: true }

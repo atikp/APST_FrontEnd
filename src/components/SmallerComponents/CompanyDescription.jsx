@@ -130,7 +130,13 @@ function CompanyDescription() {
       <p className="font-bold text-2xl pb-2 flex place-self-center dark:text-white">
         {fetchedData.companyName} ( {fetchedData.country} )
       </p>
-      <StockGraph symbol={fetchedData.symbol} website={companyFallback.url}/>
+      {fetchedData.symbol ? (
+  <StockGraph symbol={fetchedData.symbol} website={companyFallback.url} />
+) : (
+  <div className="p-4 mt-5 mx-5 border rounded-2xl dark:bg-gray-900 text-center">
+    <p className="text-gray-400">Loading stock data...</p>
+  </div>
+)}
       <div className="company-data mt-5 mx-5 border-0 flex-col rounded-2xl p-10 text:black dark:text-white dark:bg-gray-900">
         <div className="company-header flex max-md:flex-col justify-between border-gray-200 dark:bg-gray-800 rounded-3xl p-5 bg-gray-200">
           <div className="imgBlock flex flex-col justify-center sm:mr-10">

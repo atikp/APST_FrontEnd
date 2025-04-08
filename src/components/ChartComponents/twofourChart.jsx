@@ -60,7 +60,7 @@ const TwentyFourHourChart = ({ data, symbol, theme, date  }) => {
         top: 5
       },
       redrawOnWindowResize:true,
-      foreColor: theme = 'dark' ? '#fff' : '#222324',
+      foreColor: theme === 'dark' ? '#fff' : '#222324',
       background: 'transparent',
       type: 'area',
       height: 350,

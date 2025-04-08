@@ -31,7 +31,7 @@ const TwentyYearChart = ({ data, symbol, theme, date  }) => {
       },
       redrawOnWindowResize:true,
       background: 'transparent',
-      foreColor:(theme="dark" ? "#fff" : "#222324"),
+      foreColor:(theme==="dark" ? "#fff" : "#222324"),
       type: "line",
       height: 350 },
     title: { text: `${symbol} - 20 Year History until ${date}`, align:'left' },
@@ -40,7 +40,7 @@ const TwentyYearChart = ({ data, symbol, theme, date  }) => {
     xaxis: { 
       type: "datetime",
       labels: { 
-        formatter: (value) => new Date(value).toLocaleDateString('default', { year: 'numeric' }) 
+        formatter: (value) => new Date(value).toLocaleDateString('default', { year: 'numeric',month: 'short',day: 'numeric'  }) 
       }
     },
     yaxis: { title: { text: "Price" } },
