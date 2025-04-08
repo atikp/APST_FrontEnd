@@ -12,7 +12,7 @@ Welcome to **APST (AP Stock Trader)** — a gamified, beginner-friendly React st
 ## 🧩 Features
 
 - 🔐 Firebase Auth: Signup/login with email + password
-- 💸 Buy/Sell stocks with a £10,000 virtual portfolio
+- 💸 Buy/Sell stocks with a $10,000 virtual portfolio
 - 📊 Interactive real-time stock charts (24h, 1m, 1y, 20y)
 - 📈 Watchlist + Holdings + Transaction History
 - 📰 News integration + Gainers/Losers ticker
