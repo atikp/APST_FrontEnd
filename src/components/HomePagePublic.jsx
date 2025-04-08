@@ -18,6 +18,7 @@ import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MobileFriendlyTooltip from './SmallerComponents/MobileFriendlyTooltip';
+import { sanitize } from '../utils/sanitize';
 
 export default function HomePagePublic({ open, setOpen, openSignUp, setOpenSignUp }) {
   const [formData, setFormData] = useState({
@@ -108,7 +109,15 @@ useEffect(() => {
       fmpKey,
     } = formData;
 
-    if (password !== confirmPassword) {
+    const cleanEmail = sanitize(email);
+const cleanPassword = sanitize(password);
+const cleanConfirmPassword = sanitize(confirmPassword);
+const cleanUsername = sanitize(username);
+const cleanAlphaKey = sanitize(alphaKey);
+const cleanFinnhubKey = sanitize(finnhubKey);
+const cleanFmpKey = sanitize(fmpKey);
+
+    if (cleanPassword !== cleanConfirmPassword) {
       toast.error('Passwords do not match');
       return;
     }
@@ -116,20 +125,20 @@ useEffect(() => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        cleanEmail,
+        cleanPassword
       );
       const user = userCredential.user;
 
       // Create Firestore user document
       await setDoc(doc(db, 'users', user.uid), {
-        username,
-        email,
+        username: cleanUsername,
+        email: cleanEmail,
         balance: 10000,
         apiKeys: {
-          fmp: fmpKey,
-          alphaVantage: alphaKey,
-          finnhub: finnhubKey,
+          fmp: cleanFmpKey,
+          alphaVantage: cleanAlphaKey,
+          finnhub: cleanFinnhubKey,
         },
         FirstTime: [], 
 
@@ -180,7 +189,7 @@ useEffect(() => {
     }
   
     try {
-      await sendPasswordResetEmail(auth, resetEmail);
+      await sendPasswordResetEmail(auth, sanitize(resetEmail));
       toast.success('Password reset email sent!');
       setShowResetPrompt(false);
     } catch (error) {
@@ -192,8 +201,8 @@ useEffect(() => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = sanitize(document.getElementById('email').value);
+    const password = sanitize(document.getElementById('password').value);
 
     try {
       const userCredential = await signInWithEmailAndPassword(

@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { deleteUser, updatePassword } from 'firebase/auth';
 import ConfirmModal from './SmallerComponents/ConfirmModal';
 import AccoladesDisplay from '../components/SmallerComponents/AccoladesDisplay';
+import { sanitize } from '../utils/sanitize';
 
 
 function UpdateProfile() {
@@ -55,12 +56,12 @@ function UpdateProfile() {
 
     const updatedData = {
       apiKeys: {
-        finnhub: finnhubKey,
-        alphaVantage: alphaKey,
-        fmp: fmpKey,
+        finnhub: sanitize(finnhubKey),
+        alphaVantage: sanitize(alphaKey),
+        fmp: sanitize(fmpKey),
       },
-      stockList: stockList.slice(0, 10),
-      username,
+      stockList: stockList.slice(0, 10).map((stock) => sanitize(stock.toUpperCase())),
+      username: sanitize(username),
     };
 
     try {
@@ -92,7 +93,7 @@ function UpdateProfile() {
         }
       
         try {
-          await updatePassword(auth.currentUser, newPassword);
+          await updatePassword(auth.currentUser, sanitize(newPassword));
           toast.success("Password updated successfully!");
         } catch (err) {
           console.error("Password update error:", err);
@@ -153,7 +154,7 @@ function UpdateProfile() {
                       id="finnhub-key"
                       type="text"
                       value={finnhubKey}
-                      onChange={(e) => setFinnhubKey(e.target.value)}
+                      onChange={(e) => setFinnhubKey(sanitize(e.target.value))}
                       className="w-full mt-1 rounded-md bg-white px-3 py-2 text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-300 focus:outline-indigo-600"
                     />
                   </div>
@@ -165,7 +166,7 @@ function UpdateProfile() {
                       id="alpha-key"
                       type="text"
                       value={alphaKey}
-                      onChange={(e) => setAlphaKey(e.target.value)}
+                      onChange={(e) => setAlphaKey(sanitize(e.target.value))}
                       className="w-full mt-1 rounded-md bg-white px-3 py-2 text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-300 focus:outline-indigo-600"
                     />
                   </div>
@@ -177,7 +178,7 @@ function UpdateProfile() {
                       id="fmp-key"
                       type="text"
                       value={fmpKey}
-                      onChange={(e) => setFmpKey(e.target.value)}
+                      onChange={(e) => setFmpKey(sanitize(e.target.value))}
                       className="w-full mt-1 rounded-md bg-white px-3 py-2 text-gray-900 dark:bg-gray-800 dark:text-white border border-gray-300 focus:outline-indigo-600"
                     />
                   </div>
@@ -195,7 +196,8 @@ function UpdateProfile() {
                         value={stock}
                         onChange={(e) => {
                           const updatedList = [...stockList];
-                          updatedList[index] = e.target.value.toUpperCase();
+                          const cleanInput = sanitize(e.target.value).toUpperCase();
+                          updatedList[index] = cleanInput;
                           setStockList(updatedList);
                         }}
                         className="w-28 rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-xl"
@@ -245,7 +247,7 @@ function UpdateProfile() {
                       name="username"
                       type="text"
                       value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      onChange={(e) => setUsername(sanitize(e.target.value))}
                       autoComplete="username"
                       className="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-xl"
                     />
@@ -275,7 +277,7 @@ function UpdateProfile() {
                     placeholder="New Password"
                     value={newPassword}
                     onChange={(e) => {
-                      setNewPassword(e.target.value);
+                      setNewPassword(sanitize(e.target.value));
                       if (passwordError) setPasswordError('');
                     }}
                     className="rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600"
@@ -285,7 +287,7 @@ function UpdateProfile() {
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => {
-                      setConfirmPassword(e.target.value);
+                      setConfirmPassword(sanitize(e.target.value));
                       if (passwordError) setPasswordError('');
                     }}
                     className="rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600"
