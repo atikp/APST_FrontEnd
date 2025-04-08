@@ -39,7 +39,7 @@ const StockGraph = ({ symbol, website }) => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    console.log(theme)
+    // console.log(theme)
     // Initial check
     setTheme(mediaQuery.matches ? 'dark' : 'light');
     
