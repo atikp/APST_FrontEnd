@@ -109,7 +109,7 @@ const StockGraph = ({ symbol, website }) => {
         ? '../../mock/mockStockData.json'
         : '../../mock/mockStockDataYear.json';
       
-      const mockModule = await import(mockPath);
+      const mockModule = await import(/* @vite-ignore */mockPath);
       const timeSeries = dataType === 'intraday' 
         ? mockModule.default["Time Series (5min)"]
         : mockModule.default["Monthly Time Series"];
