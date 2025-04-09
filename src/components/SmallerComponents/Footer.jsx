@@ -21,7 +21,7 @@ export default function Footer() {
             About
           </Link> */}
           <a
-            href="https://github.com/YOUR_GITHUB"
+            href="https://github.com/atikp"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline hover:text-blue-500"

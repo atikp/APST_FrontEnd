@@ -5,6 +5,8 @@ import StockGraph from '../ChartComponents/MainStock';
 import useAccolade from '../../hooks/UseAccolades';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from "../../utils/api";
+import Spinner from './Spinner';
+import logo from '../../assets/images/apstPadded.png'
 
 const makeThousand = (x, y, z) =>
   Number(x).toLocaleString('en-US', { style: y, currency: z });
@@ -99,9 +101,27 @@ function CompanyDescription() {
   
         if (companyData?.symbol) {
           setFetchedData(companyData);
-          setLogoUrl(
-            `https://raw.githubusercontent.com/atikp/stockFetcher/refs/heads/main/icons/stock_icons/${symbol}.png`
-          );
+          
+          // Create an image element to check if the remote logo exists
+          const img = new Image();
+          const remoteLogoUrl = `https://raw.githubusercontent.com/atikp/stockFetcher/refs/heads/main/icons/stock_icons/${symbol}.png`;
+          
+          img.onload = () => {
+            // Image exists, set the remote URL
+            setLogoUrl(remoteLogoUrl);
+          };
+          
+          img.onerror = () => {
+            // Image doesn't exist, use the local fallback
+            // import('../../assets/images/apstPadded.png').then(logoModule => {
+            //   setLogoUrl(logoModule.default);
+            // });
+            // Alternatively, if you've already imported the logo at the top:
+            setLogoUrl(logo);
+          };
+          
+          // Start loading the image to trigger onload/onerror
+          img.src = remoteLogoUrl;
         } else {
           console.error('No company data found for symbol:', symbol);
         }
@@ -134,7 +154,7 @@ function CompanyDescription() {
   <StockGraph symbol={fetchedData.symbol} website={companyFallback.url} />
 ) : (
   <div className="p-4 mt-5 mx-5 border rounded-2xl dark:bg-gray-900 text-center">
-    <p className="text-gray-400">Loading stock data...</p>
+    <div className="text-gray-400">Loading stock data... <Spinner/></div>
   </div>
 )}
       <div className="company-data mt-5 mx-5 border-0 flex-col rounded-2xl p-10 text:black dark:text-white dark:bg-gray-900">
@@ -143,7 +163,7 @@ function CompanyDescription() {
           <img
             src={logoUrl}
             alt="company logo"
-            className="h-[200px] flex max-md:w-[200px] max-md:place-self-center"
+            className="h-[200px] flex max-md:w-[200px] max-md:place-self-center dark:border-gray-800 border-gray-200 rounded-xl"
           />
             <div className="flex flex-col items-center space-y-4 px-6 pt-4 pb-6 my-3">
         <button
@@ -168,7 +188,7 @@ function CompanyDescription() {
                   ? `${fetchedData.companyName} (${fetchedData.country})`
                   : 'Loading...'} 
               </p>
-              <a className="text-blue-500" href={fetchedData.website || '#'}>
+              <a className={fetchedData.website ? 'text-blue-500' : 'disabled'} href={fetchedData.website || '#'}>
                 {fetchedData.website || 'Loading...'}
               </a>
               <p>

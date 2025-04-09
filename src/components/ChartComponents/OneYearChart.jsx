@@ -1,9 +1,19 @@
-import React from "react";
+import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
 const OneYearChart = ({ data, symbol, theme, date }) => {
   // Take the last 12 monthly data points
-  const oneYearData = data.slice(-12);
+  
+   const processedData = useMemo(() => {
+      // Take up to 240 months (20 years)
+      const oneYearData = data.slice(-12);
+      
+      // Transform the data just once when data changes
+      return oneYearData.map(item => ({
+        x: new Date(item.date).getTime(),
+        y: item.open
+      }));
+    }, [data]);
 
   const chartOptions = {
     fill: {
@@ -33,9 +43,10 @@ const OneYearChart = ({ data, symbol, theme, date }) => {
       background: 'transparent',
       foreColor:(theme==="dark" ? "#fff" : "#222324"),
       type: "line", 
-      height: 350 },
-      zoom: { enabled: true },
-    title: { text: `${symbol} - Past Year until ${date}`,align:'center' },
+      height: 350 ,
+      zoom: { enabled: true }
+    },
+    title: { text: `${symbol} - Past Year until ${date}`,align:'left' },
     dataLabels: {
       enabled:false    },
     xaxis: { 
@@ -64,10 +75,7 @@ const OneYearChart = ({ data, symbol, theme, date }) => {
       }}
       series={[{
         name: "Price",
-        data: oneYearData.map(item => ({
-          x: new Date(item.date).getTime(),
-          y: item.open
-        }))
+        data: processedData
       }]}
       type="area"
       height={350}

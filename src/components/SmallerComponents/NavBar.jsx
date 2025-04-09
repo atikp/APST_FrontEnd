@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Dialog, DialogPanel } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon,UserCircleIcon, FireIcon,BanknotesIcon } from '@heroicons/react/24/outline';
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserCircleIcon,
+  FireIcon,
+  BanknotesIcon,
+} from '@heroicons/react/24/outline';
 import { signOut } from 'firebase/auth';
-import { auth } from "../../../firebase";
+import { auth } from '../../../firebase';
 import { useUser } from '../../context/UserContext';
 import logo from '../../assets/images/apst.png';
 import Search from './Search';
@@ -20,7 +26,7 @@ function NavBar({ setOpen }) {
         { name: 'Dashboard', href: '/dashboard' },
         { name: 'News', href: '/news' },
         { name: 'Transactions', href: '/transactions' },
-        { name: 'Update Profile', href: '/profile' },
+        { name: 'User Profile', href: '/profile' },
       ]
     : [];
 
@@ -31,7 +37,7 @@ function NavBar({ setOpen }) {
       toast.success("You've been logged out");
       navigate('/');
     } catch (err) {
-      console.error("Logout error:", err.message);
+      console.error('Logout error:', err.message);
     }
   };
 
@@ -51,15 +57,19 @@ function NavBar({ setOpen }) {
           </Link>
         </div>
         <div className="flex lg:hidden">
-        {userData && (<>
-        
-          <span className="ml-2 text-orange-500 flex gap-1 items-center font-semibold">
-          <FireIcon className="h-5 w-5"/> {userData.loginStreak}
-        </span>
-  <span className="text-sm text-gray-900 dark:text-white px-3 flex justify-self-center items-center">
-    <UserCircleIcon className="h-8 w-8 text-black dark:text-white pr-1" /> {userData.username?.toUpperCase()} <BanknotesIcon className="h-7 w-7 px-1 text-green-600" /> ${userData.balance?.toLocaleString() || 0}
-  </span></>
-)}
+          {userData && (
+            <>
+              <span className="ml-2 text-orange-500 flex gap-1 items-center font-semibold">
+                <FireIcon className="h-5 w-5" /> {userData.loginStreak}
+              </span>
+              <span className="text-sm text-gray-900 dark:text-white px-3 flex justify-self-center items-center">
+                <Link to='/profile' className='flex items-center'><UserCircleIcon className="h-8 w-8 text-black dark:text-white pr-1" />{' '}
+                {userData.username?.toUpperCase()}</Link>{' '}
+                <BanknotesIcon className="h-7 w-7 px-1 text-green-600" /> $
+                {userData.balance?.toLocaleString() || 0}
+              </span>
+            </>
+          )}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
@@ -85,18 +95,19 @@ function NavBar({ setOpen }) {
               {item.name}
             </NavLink>
           ))}
-          <div className="pl-3">
-          {userData && <Search />}
-          </div>
+          <div className="pl-3">{userData && <Search />}</div>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-4 pr-9">
           {userData ? (
             <>
-            <span className="ml-2 text-orange-500 font-semibold flex justify-center">
-    <FireIcon className="h-6 w-6" /> {userData.loginStreak}
-  </span>
+              <span className="ml-2 text-orange-500 font-semibold flex justify-center">
+                <FireIcon className="h-6 w-6" /> {userData.loginStreak}
+              </span>
               <span className="text-sm text-gray-900 dark:text-white flex items-center justify-between">
-                <UserCircleIcon className="h-8 w-8" /> {userData.username.toUpperCase()} <BanknotesIcon className="h-8 w-8 ml-3" /> ${userData.balance?.toLocaleString() || 0}
+              <Link to='/profile' className='flex items-center'><UserCircleIcon className="h-8 w-8" />{' '}
+              {userData.username.toUpperCase()}{' '}</Link>
+                <BanknotesIcon className="h-8 w-8 ml-3" /> $
+                {userData.balance?.toLocaleString() || 0}
               </span>
               <button
                 onClick={handleLogout}
@@ -126,7 +137,11 @@ function NavBar({ setOpen }) {
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <Link to="/" className="-m-1.5 p-1.5"onClick={() => setMobileMenuOpen(false)}>
+            <Link
+              to="/"
+              className="-m-1.5 p-1.5"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <img alt="" src={logo} className="h-8 w-auto" />
             </Link>
             <button
@@ -138,9 +153,7 @@ function NavBar({ setOpen }) {
             </button>
           </div>
 
-          <div className="pt-6">
-          {userData && <Search />}
-          </div>
+          <div className="pt-6">{userData && <Search />}</div>
 
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
@@ -169,7 +182,9 @@ function NavBar({ setOpen }) {
                 {userData ? (
                   <>
                     <p className="text-sm font-medium text-gray-700">
-                      <UserCircleIcon className="h-8 w-8" /> {userData.username} | <BanknotesIcon className="h-8 w-8" /> £{userData.balance?.toLocaleString() || 0}
+                      <UserCircleIcon className="h-8 w-8" /> {userData.username}{' '}
+                      | <BanknotesIcon className="h-8 w-8" /> £
+                      {userData.balance?.toLocaleString() || 0}
                     </p>
                     <button
                       onClick={() => {

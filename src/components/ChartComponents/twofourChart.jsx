@@ -48,7 +48,7 @@ const TwentyFourHourChart = ({ data, symbol, theme, date  }) => {
         offsetY:(window.innerWidth < 507 ? 20 : 0),
         tools: {
           selection: true,
-          reset: true,
+          reset: false,
           zoom:true
         },
       },
@@ -68,7 +68,7 @@ const TwentyFourHourChart = ({ data, symbol, theme, date  }) => {
     },
     title: {
       text: `${symbol} - Most Recent Trading Day ${date }`,
-      align: 'center',
+      align: 'left',
     },
     dataLabels: {
       enabled: false,

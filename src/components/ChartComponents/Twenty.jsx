@@ -1,14 +1,23 @@
-import React from "react";
+import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
 const TwentyYearChart = ({ data, symbol, theme, date  }) => {
   // Take up to 240 months (20 years)
-  const twentyYearData = data.slice(-240);
-
+  const processedData = useMemo(() => {
+    // Take up to 240 months (20 years)
+    const twentyYearData = data.slice(-240);
+    
+    // Transform the data just once when data changes
+    return twentyYearData.map(item => ({
+      x: new Date(item.date).getTime(),
+      y: item.open
+    }));
+  }, [data]);
+  
   const chartOptions = {
     fill: {
       gradient: {
-          shade:"light",
+          shade:"dark",
           type: "horizontal",
           shadeIntensity: 0.1,
           opacityFrom: 0.1,
@@ -33,7 +42,8 @@ const TwentyYearChart = ({ data, symbol, theme, date  }) => {
       background: 'transparent',
       foreColor:(theme==="dark" ? "#fff" : "#222324"),
       type: "line",
-      height: 350 },
+      height: 350,
+      zoom: { enabled: true } },
     title: { text: `${symbol} - 20 Year History until ${date}`, align:'left' },
     dataLabels: {
       enabled:false    },
@@ -65,10 +75,7 @@ const TwentyYearChart = ({ data, symbol, theme, date  }) => {
       }}
       series={[{
         name: "Price",
-        data: twentyYearData.map(item => ({
-          x: new Date(item.date).getTime(),
-          y: item.open
-        }))
+        data: processedData
       }]}
       type="area"
       height={350}

@@ -1,11 +1,15 @@
-import React from "react";
+
+import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
 const OneMonthChart = ({ data, symbol, theme, date }) => {
-
+  
+  const sampledData = useMemo(() => {
+    return data.filter((_, index) => index % 3 === 0);
+  }, [data]);
   // Use full month of intraday data
   const chartOptions = {
-
+    
     fill: {
       gradient: {
           shade:"dark",
@@ -38,7 +42,7 @@ const OneMonthChart = ({ data, symbol, theme, date }) => {
     },
     title: { 
       text: `${symbol} - Past Month until ${ date }`,
-      align: 'center'
+      align: 'left'
     },
     dataLabels: {
       enabled:false    },
@@ -76,7 +80,7 @@ const OneMonthChart = ({ data, symbol, theme, date }) => {
       }}
       series={[{
         name: "Price",
-        data: data.map(item => ({
+        data: sampledData.map(item => ({
           x: new Date(item.date).getTime(),
           y: item.open
         }))
