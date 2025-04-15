@@ -105,6 +105,7 @@ const HoldingsCard = ({ holding }) => {
             <p className="text-sm text-gray-500">Purchased: {formattedDate}</p>
 
             {profitLoss && (
+              <>
               <p className={`mt-2 font-semibold flex items-center gap-1 ${profitLossColor}`}>
                 {profitLoss.difference > 0 ? (
                   <ArrowTrendingUpIcon className="w-5 h-5" />
@@ -114,6 +115,8 @@ const HoldingsCard = ({ holding }) => {
                 {profitLoss.difference >= 0 ? "+" : ""}
                 {profitLoss.difference.toFixed(2)} ({profitLoss.percentage}%)
               </p>
+              <p className="flex place-self-start dark:text-gray-500 text-gray-700">(Total ROI)</p>
+              </>
             )}
           </div>
         </div>
