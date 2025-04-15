@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import NewsCard from "./NewsCard";
 import { useUser } from "../../context/UserContext"
 import { API_BASE } from "../../utils/api";
+import isSafeUrl from "../../utils/isSafeUrl";
 
 const TopNews = () => {
   const [topNews, setTopNews] = useState([]);
@@ -79,10 +80,12 @@ const TopNews = () => {
   return (
     <div className="mx-auto p-4">
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
-      {topNews.map((item) => (
+      {topNews.map((item) => {
+        const safeUrl = isSafeUrl(item.url) ? item.url : '#';
+        return(
        <a 
        key={item.id}
-       href={item.url}
+       href={safeUrl}
        target="_blank"
        rel="noopener noreferrer"
        className="block h-full rounded-lg overflow-hidden transition-transform duration-300 hover:transform hover:scale-[1.02]  shadow-lg dark:shadow-blue-500/40 dark:inset-shadow-sm dark:inset-shadow-blue-50/10"
@@ -102,7 +105,8 @@ const TopNews = () => {
          </div>
        </div>
      </a>
-      ))}
+        );
+})}
     </div>
   </div>
   );

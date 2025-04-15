@@ -7,14 +7,20 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE } from "../../utils/api";
 import Spinner from './Spinner';
 import logo from '../../assets/images/apstPadded.png'
+import isSafeUrl from '../../utils/isSafeUrl';
 
 const makeThousand = (x, y, z) =>
   Number(x).toLocaleString('en-US', { style: y, currency: z });
+
+
 
 function CompanyDescription() {
   const [fetchedData, setFetchedData] = useState({});
   const [logoUrl, setLogoUrl] = useState(null);
   const [companyFallback, setCompanyFallback] = useState({});
+  const nasdaqUrl = companyFallback?.url 
+  ? `https://www.nasdaq.com${companyFallback.url}` 
+  : null;
   const [currentData, setCurrentData] = useState({});
   const { symbol } = useParams();
   const navigate = useNavigate();
@@ -188,9 +194,14 @@ function CompanyDescription() {
                   ? `${fetchedData.companyName} (${fetchedData.country})`
                   : 'Loading...'} 
               </p>
-              <a className={fetchedData.website ? 'text-blue-500' : 'disabled'} href={fetchedData.website || '#'}>
-                {fetchedData.website || 'Loading...'}
-              </a>
+              <a
+  className={fetchedData.website && isSafeUrl(fetchedData.website) ? 'text-blue-500' : 'disabled'}
+  href={isSafeUrl(fetchedData.website) ? fetchedData.website : '#'}
+  rel="noopener noreferrer"
+  target="_blank"
+>
+  {fetchedData.website || 'Loading...'}
+</a>
               <p>
                 Sector: {fetchedData.sector || 'Loading...'} </p>
                 <p>Industry: {fetchedData.industry || 'Loading...'}
@@ -225,11 +236,12 @@ function CompanyDescription() {
               <p className='text-xl'>last Sale: {currentData?.primaryData?.lastSalePrice} at <br/> {currentData?.primaryData?.lastTradeTimestamp}</p>
               <p className={`${currentData?.primaryData?.deltaIndicator === 'up' ? 'text-green-400' : 'text-red-600'}`}>{(currentData?.primaryData?.deltaIndicator)?.toUpperCase()} from previous Sale</p>
                 
-                <a
-                  className="border-solid border-amber-50 text-blue-500"
-                  target="_blank"
-                  href={`https://www.nasdaq.com${companyFallback.url}`}
-                >
+              <a
+  className="text-blue-500"
+  target="_blank"
+  rel="noopener noreferrer"
+  href={isSafeUrl(nasdaqUrl) ? nasdaqUrl : '#'}
+>
                   {' '}
                  
                   More Info...{' '}
