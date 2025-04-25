@@ -97,10 +97,12 @@ const HoldingsCard = ({ holding }) => {
 
           <div>
             <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              ${pricePurchasedAt.toFixed(2)}
+              {pricePurchasedAt.toLocaleString('en-US',{style:'currency',currency:'USD', minimumFractionDigits: 2,
+  maximumFractionDigits: 2,})}
             </p>
             <p>Shares: {amountOfStock}</p>
-            <p>Paid: ${totalPriceAtPurchase.toLocaleString()}</p>
+            <p>Paid: {totalPriceAtPurchase.toLocaleString('en-US',{style:'currency',currency:'USD', minimumFractionDigits: 2,
+  maximumFractionDigits: 2,})}</p>
             <p className="text-sm text-gray-500">Purchased: {formattedDate}</p>
 
             {profitLoss && (
