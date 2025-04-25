@@ -79,7 +79,7 @@ const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
 
     if (searchedCompany?.primaryData?.lastSalePrice) {
       const pricePerShare = Number(
-        searchedCompany.primaryData.lastSalePrice.substring(1)
+        searchedCompany.primaryData.lastSalePrice.replace(/[$,]/g, '')
       );
       setTotalPrice(value * pricePerShare);
     }
@@ -94,7 +94,7 @@ const BuyModal = ({ symbol, onClose, scrollToHoldings }) => {
       const uid = userData?.uid;
       const stockName = searchedCompany?.companyName;
       const pricePurchasedAt = Number(
-        searchedCompany?.primaryData?.lastSalePrice?.substring(1)
+        searchedCompany?.primaryData?.lastSalePrice?.replace(/[$,]/g, '')
       );
 
       const res = await fetch(`${API_BASE}/api/trade/buy`, {

@@ -26,7 +26,7 @@ const SellModal = ({ holding, onSell, onClose }) => {
         const response = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
         const data = await response.json();
         const price = parseFloat(
-          data?.data?.primaryData?.lastSalePrice?.replace("$", "") || "0"
+          data?.data?.primaryData?.lastSalePrice?.replace(/[$,]/g, '') || "0"
         );
         setCurrentPrice(price);
       } catch (err) {

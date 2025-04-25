@@ -35,10 +35,9 @@ const HoldingsCard = ({ holding }) => {
         const res = await fetch(`${API_BASE}/api/nasdaq/quote/${symbol}`);
         const data = await res.json();
         const livePrice = parseFloat(
-          data?.data?.primaryData?.lastSalePrice?.replace("$", "") || "0"
+          data?.data?.primaryData?.lastSalePrice?.replace(/[$,]/g, '') || "0"
         );
         setCurrentPrice(livePrice);
-
         const currentValue = livePrice * amountOfStock;
         const difference = currentValue - totalPriceAtPurchase;
         const percentage = ((difference / totalPriceAtPurchase) * 100).toFixed(2);
