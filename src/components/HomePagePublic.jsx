@@ -670,7 +670,7 @@ const cleanFmpKey = sanitize(fmpKey);
       </section>
 
       <section id="stepByStep" className="text-gray-600 dark:text-white dark:bg-black body-font flex flex-row justify-center items-center">
-        <div className="container px-5 py-24 mx-auto flex flex-wrap">
+        <div className="container px-5 py-24 mx-auto flex flex-wrap text-pretty">
           <div className="flex flex-wrap items-center w-full">
             <div className="lg:w-2/5 md:w-1/2 md:pr-10 md:py-6 flex-row ">
               <div className="flex relative pb-5">
@@ -803,7 +803,7 @@ const cleanFmpKey = sanitize(fmpKey);
                   </p>
                 </div>
               </div>
-              <div className="mt-5 flex flex-col place-self-center gap-x-6">
+              <div className="mt-5 flex flex-col place-self-center gap-x-6 text-pretty">
                 <MobileFriendlyTooltip title={"BEFORE YOU START"} message={"If you would like more info please visit the FAQ page in the footer"}/>
                 <p>
                   Since this app is completely FREE to use, there are 3 things I
