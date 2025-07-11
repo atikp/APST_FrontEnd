@@ -8,7 +8,7 @@ const MobileFriendlyTooltip = ({title, message } ) => {
   return (
     <Tooltip.Provider delayDuration={0}>
       <div className="flex items-center justify-center self-center place-self-center mb-10">
-        <h1 className="z-50 text-4xl dark:text-white">
+        <h1 className=" text-4xl dark:text-white">
           {title}
         </h1>
 
