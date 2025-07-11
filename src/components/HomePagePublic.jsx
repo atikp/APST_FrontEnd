@@ -799,7 +799,7 @@ const cleanFmpKey = sanitize(fmpKey);
                   </h2>
                   <p className="leading-relaxed">
                     Watch as your money grows and view all of your transactions
-                    in the transactions tab. enjoy the experience.<br/> NB: If you do go broke don't worry, you can always start fresh from the UPDATE PROFILE page.(Check it out)
+                    in the transactions tab. enjoy the experience.<br/> NB: If you do go broke don't worry, you can always start fresh from the USER PROFILE page.(Check it out)
                   </p>
                 </div>
               </div>
