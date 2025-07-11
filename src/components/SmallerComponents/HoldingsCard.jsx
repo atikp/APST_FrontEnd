@@ -9,7 +9,7 @@ import {
 
 
 const HoldingsCard = ({ holding }) => {
-  const [logoUrl, setLogoUrl] = useState("");
+  const [logoUrl, setLogoUrl] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { setUserData } = useUser();
 

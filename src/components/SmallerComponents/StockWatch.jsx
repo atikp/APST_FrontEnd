@@ -45,9 +45,9 @@ const StockWatch = ({ PROPSYMBOLS }) => {
           }, 100);
         });
   
-        socket.addEventListener("close", () => {
-          console.log("❌ WebSocket connection closed");
-        });
+        // socket.addEventListener("close", () => {
+        //   console.log("❌ WebSocket connection closed");
+        // });
       });
     });
   
@@ -58,7 +58,7 @@ const StockWatch = ({ PROPSYMBOLS }) => {
           socket.send(JSON.stringify({ type: "unsubscribe", symbol }));
         });
         socket.close();
-        console.log("📴 Unsubscribed and closed WebSocket");
+        // console.log("📴 Unsubscribed and closed WebSocket");
       }
     };
   }, [PROPSYMBOLS]);

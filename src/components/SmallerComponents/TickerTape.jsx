@@ -66,7 +66,7 @@ const setPaused = (val) => {
       onMouseLeave={() => setPaused(false)}
       onClick={() => isTouchDevice && setPaused(prev => !prev)}
     >
-      <div className="flex items-center px-4 py-2 text-sm font-medium">
+      <div className="flex items-center px-4 text-sm font-medium">
         <span className="mr-4 dark:text-yellow-300 text-yellow-800"><ArrowTrendingUpIcon className='h-6 w-8'/> Gainers</span>
         <div className=" relative overflow-hidden w-full">
           <div
